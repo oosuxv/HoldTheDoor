@@ -21,7 +21,7 @@ void readSale(Sale *s);
 
 void generateSales(Sale *sales, int size);
 
-void mergeSort(Sale *sales, int left, int right);
+void mergeSort(Sale *sales, int start, int end);
 
 int main() {
     int size;
@@ -53,7 +53,7 @@ void generateSales(Sale *sales, int size) {
         sprintf(sales[i].name, "name %3d", i);
         sales[i].price = i + 1;
         sales[i].quantity = i + 1;
-        sales[i].day = i % 31 + 1;
+        sales[i].day = i % 31 + 1; // potential impossible dates
         sales[i].month = i % 12 + 1;
         sales[i].year = i + 2000;
     }
@@ -64,60 +64,60 @@ void readSale(Sale *s) {
     printf("Enter the name: ");
     scanf("%s", &s->name);
     printf("Enter the day: ");
-    scanf("%d", &s->day);
+    scanf("%d", &s->day);               //validation needed?
     printf("Enter the month: ");
-    scanf("%d", &s->month);
+    scanf("%d", &s->month);             //validation needed?
     printf("Enter the year: ");
     scanf("%d", &s->year);
     printf("Enter the price: ");
-    scanf("%f", &s->price);
+    scanf("%f", &s->price);             //validation needed?
     printf("Enter the quantity: ");
-    scanf("%d", &s->quantity);
+    scanf("%d", &s->quantity);          //validation needed?
 }
 
-void merge(Sale *sales, int left, int middle, int right) {
-    int sizeL = middle - left + 1;
-    int sizeR = right - middle;
+void merge(Sale *sales, int start, int middle, int end) {
+    int sizeL = middle - start + 1;
+    int sizeR = end - middle;
 
-    Sale *Left = malloc(sizeL * sizeof(Sale));
-    Sale *Right = malloc(sizeR * sizeof(Sale));
+    Sale *left = malloc(sizeL * sizeof(Sale));
+    Sale *right = malloc(sizeR * sizeof(Sale));
     for (int i = 0; i < sizeL; i++) {
-        Left[i] = sales[left + i];
+        left[i] = sales[start + i];
     }
     for (int j = 0; j < sizeR; j++) {
-        Right[j] = sales[middle + 1 + j];
+        right[j] = sales[middle + 1 + j];
     }
 
-    int posL = 0,  posR = 0, posOrigin = left;
+    int posL = 0,  posR = 0, posOrigin = start;
     while (posL < sizeL && posR < sizeR) {
-        if (Left[posL].month <= Right[posR].month) {
-            sales[posOrigin] = Left[posL];
+        if (left[posL].month <= right[posR].month) {
+            sales[posOrigin] = left[posL];
             posL++;
         } else {
-            sales[posOrigin] = Right[posR];
+            sales[posOrigin] = right[posR];
             posR++;
         }
         posOrigin++;
     }
     while (posL < sizeL) {
-        sales[posOrigin] = Left[posL];
+        sales[posOrigin] = left[posL];
         posL++;
         posOrigin++;
     }
     while (posR < sizeR) {
-        sales[posOrigin] = Right[posR];
+        sales[posOrigin] = right[posR];
         posR++;
         posOrigin++;
     }
-    free(Left);
-    free(Right);
+    free(left);
+    free(right);
 }
 
-void mergeSort(Sale *sales, int left, int right) {
-    if (left < right) {
-        int m = left + (right - left) / 2;
-        mergeSort(sales, left, m);
-        mergeSort(sales, m + 1, right);
-        merge(sales, left, m, right);
+void mergeSort(Sale *sales, int start, int end) {
+    if (start < end) {
+        int middle = start + (end - start) / 2;
+        mergeSort(sales, start, middle);
+        mergeSort(sales, middle + 1, end);
+        merge(sales, start, middle, end);
     }
 }
