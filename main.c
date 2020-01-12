@@ -88,26 +88,26 @@ void merge(Sale *sales, int left, int middle, int right) {
         Right[j] = sales[middle + 1 + j];
     }
 
-    int posL = 0,  posR = 0, positionOriginal = left;
+    int posL = 0,  posR = 0, posOrigin = left;
     while (posL < sizeL && posR < sizeR) {
         if (Left[posL].month <= Right[posR].month) {
-            sales[positionOriginal] = Left[posL];
+            sales[posOrigin] = Left[posL];
             posL++;
         } else {
-            sales[positionOriginal] = Right[posR];
+            sales[posOrigin] = Right[posR];
             posR++;
         }
-        positionOriginal++;
+        posOrigin++;
     }
     while (posL < sizeL) {
-        sales[positionOriginal] = Left[posL];
+        sales[posOrigin] = Left[posL];
         posL++;
-        positionOriginal++;
+        posOrigin++;
     }
     while (posR < sizeR) {
-        sales[positionOriginal] = Right[posR];
+        sales[posOrigin] = Right[posR];
         posR++;
-        positionOriginal++;
+        posOrigin++;
     }
     free(Left);
     free(Right);
